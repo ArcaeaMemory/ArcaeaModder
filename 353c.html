@@ -13,12 +13,12 @@
             window.addEventListener("load", function () {
                 new Patcher("armeabi-v7a/libcocos2dcpp.so", "", [
                     {
-                        name: "关闭songlist, packlist, unlocks的Hash校验",
-                        tooltip: "如不关闭，将无法修改songlist, packlist, unlocks",
+                        name: "songlist, packlist, unlocks的Hash校验",
+                        tooltip: "开启时将无法修改songlist, packlist, unlocks",
                         patches: [
-                            {offset: 0x564EDE, off: [0x90, 0xBB], on: [0x00, 0xBF]}, // songlist
-                            {offset: 0x564EEE, off: [0x50, 0xBB], on: [0x00, 0xBF]}, // packlist
-                            {offset: 0x564EFE, off: [0x10, 0xBB], on: [0x00, 0xBF]} // unlocks
+                            {offset: 0x564EDE, off: [0x00, 0xBF], on: [0x90, 0xBB]}, // songlist
+                            {offset: 0x564EEE, off: [0x00, 0xBF], on: [0x50, 0xBB]}, // packlist
+                            {offset: 0x564EFE, off: [0x00, 0xBF], on: [0x10, 0xBB]} // unlocks
                         ],
                     },
                     {
@@ -29,9 +29,9 @@
                         ]
                     },
                     {
-                        name: "曲包界面锁定图标去除",
+                        name: "曲包界面锁定图标",
                         patches: [
-                            {offset: 0x4979F8, off: [0x00], on: [0x01]}
+                            {offset: 0x4979F8, off: [0x01], on: [0x00]}
                         ]
                     },
                     {
@@ -44,21 +44,9 @@
                         ]
                     },
                     {
-                        name: "Tempestissimo 硬编码去除",
+                        name: "Tempestissimo 硬编码",
                         patches: [
                             {offset: 0x4B9824, off: [
-                                0xCB, 0xF6, 0x44, 0xEE,
-                                0x0B, 0xA9, 0x20, 0x46,
-                                0xCD, 0xF6, 0x90, 0xE8,
-                                0xD2, 0xF6, 0xCE, 0xEF,
-                                0x04, 0x46, 0x0B, 0xA8,
-                                0xCB, 0xF6, 0x5E, 0xEE,
-                                0x30, 0x68, 0x00, 0x28,
-                                0x14, 0xBF, 0x80, 0x68,
-                                0x00, 0x20, 0x4C, 0xB3,
-                                0x01, 0x21, 0xD2, 0xF6,
-                                0xC8, 0xEF
-                            ], on: [
                                 0x00, 0xBF, 0x00, 0xBF,
                                 0x00, 0xBF, 0x00, 0xBF,
                                 0x00, 0xBF, 0x00, 0xBF,
@@ -70,6 +58,18 @@
                                 0x00, 0xBF, 0x00, 0xBF,
                                 0x00, 0xBF, 0x00, 0xBF,
                                 0x00, 0xBF
+                            ], on: [
+                                0xCB, 0xF6, 0x44, 0xEE,
+                                0x0B, 0xA9, 0x20, 0x46,
+                                0xCD, 0xF6, 0x90, 0xE8,
+                                0xD2, 0xF6, 0xCE, 0xEF,
+                                0x04, 0x46, 0x0B, 0xA8,
+                                0xCB, 0xF6, 0x5E, 0xEE,
+                                0x30, 0x68, 0x00, 0x28,
+                                0x14, 0xBF, 0x80, 0x68,
+                                0x00, 0x20, 0x4C, 0xB3,
+                                0x01, 0x21, 0xD2, 0xF6,
+                                0xC8, 0xEF
                             ]}
                         ]
                     },
