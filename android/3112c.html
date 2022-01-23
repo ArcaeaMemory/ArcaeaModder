@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Arcaea 3.5.3c Modder</title>
+        <link rel="stylesheet" href="../style.css">
+        <!-- don't hate -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script type="text/javascript" src="../FileSaver.min.js"></script>
+        <script type="text/javascript" src="../dllpatcher.js"></script>
+        <script type="text/javascript">
+            window.addEventListener("load", function () {
+                new Patcher("armeabi-v7a/libcocos2dcpp.so", "", [
+                    {
+                        name: "检查songlist, packlist, unlocks文件Hash值",
+                        tooltip: "开启时将无法修改songlist, packlist, unlocks",
+                        patches: [
+                            {offset: 0xE0FFD4, off: [0x00, 0xBF, 0x00, 0xBF, 0x00, 0xBF], on: [0x94, 0xF7, 0xA2, 0xFA, 0x60, 0xBB]},
+                            {offset: 0xE0FFDE, off: [0x00, 0xBF, 0x00, 0xBF, 0x00, 0xBF], on: [0x94, 0xF7, 0x9D, 0xFA, 0x38, 0xBB]},
+                            {offset: 0xE0FFE8, off: [0x00, 0xBF, 0x00, 0xBF, 0x00, 0xBF], on: [0x94, 0xF7, 0x98, 0xFA, 0x10, 0xBB]}
+                        ],
+                    },
+                ]);
+            });
+            
+        </script>
+    </head>
+    <body>
+        <h1>Arcaea 3.11.2c Modder</h1>
+    </body>
+</html>
+
