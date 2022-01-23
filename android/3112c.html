@@ -22,8 +22,8 @@
                         ],
                     },
                     {
-                        name: "检查 Tempestissimo 是否存在于songlist(Testing)",
-                        tooltip: "开启时如果Tempestissimo不存在于songlist将会闪退",
+                        name: "songlist 完整性检查(Testing)",
+                        tooltip: "开启时 Tempestissimo 或 Sayonara Hatsukoi 不存在于songlist将会闪退",
                         patches: [
                             {offset: 0xC57E36, off: [
                                 0x00, 0xBF, 0x00, 0xBF,
@@ -33,6 +33,29 @@
                                 0x76, 0x49, 0x81, 0xAD,
                                 0x79, 0x44, 0x28, 0x46,
                                 0xDB, 0xF0, 0x10, 0xFC
+                            ]},
+                            {offset: 0xB7E6C8, off: [
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF
+                            ], on: [
+                                0x05, 0xAD, 0x91, 0x49,
+                                0x79, 0x44, 0x28, 0x46,
+                                0xB4, 0xF1, 0xC7, 0xFF,
+                                0x40, 0x46, 0x29, 0x46,
+                                0x97, 0xF5, 0x29, 0xFF,
+                                0x01, 0x46, 0x08, 0xA8,
+                                0x00, 0x22, 0x00, 0x23,
+                                0xD7, 0xF2, 0x76, 0xFD,
+                                0x05, 0xA8, 0x45, 0xF3,
+                                0x72, 0xED
                             ]}
                         ]
                     },
