@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
     <head>
         <meta charset="utf-8">
         <title>Arcaea 3.5.3c Modder</title>
@@ -20,6 +20,21 @@
                             {offset: 0xE0FFDE, off: [0x00, 0xBF, 0x00, 0xBF, 0x00, 0xBF], on: [0x94, 0xF7, 0x9D, 0xFA, 0x38, 0xBB]},
                             {offset: 0xE0FFE8, off: [0x00, 0xBF, 0x00, 0xBF, 0x00, 0xBF], on: [0x94, 0xF7, 0x98, 0xFA, 0x10, 0xBB]}
                         ],
+                    },
+                    {
+                        name: "检查 Tempestissimo 是否存在于songlist(Testing)",
+                        tooltip: "开启时如果Tempestissimo不存在于songlist将会闪退",
+                        patches: [
+                            {offset: 0xC57E36, off: [
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF,
+                                0x00, 0xBF, 0x00, 0xBF
+                            ], on: [
+                                0x76, 0x49, 0x81, 0xAD,
+                                0x79, 0x44, 0x28, 0x46,
+                                0xDB, 0xF0, 0x10, 0xFC
+                            ]}
+                        ]
                     },
                 ]);
             });
