@@ -70,8 +70,8 @@
                         ]
                     },
                     {
-                        name: "SSL",
-                        tooltip: "",
+                        name: "SSL Pinning",
+                        tooltip: "开启时将无法抓包或修改服务器地址",
                         patches: [
                             {offset: 0xACD02C, off: nopList(458), on: codeToArray(`
                                 B2 48 29 46 B2 4C 78 44 7C 44 00 68 22 46 F7 F3
