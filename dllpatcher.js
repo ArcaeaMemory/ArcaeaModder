@@ -43,14 +43,20 @@
         createUI(parent) {
             var id = createID();
             var label = this.name;
-            var patch = $('<div>', {'class' : 'patch'});
+            var patch = $('<label>', {'class' : 'mdui-checkbox'});
             this.checkbox = $('<input type="checkbox" id="' + id + '">')[0];
             patch.append(this.checkbox);
-            patch.append('<label for="' + id + '">' + label + '</label>');
+            patch.append('<i class="mdui-checkbox-icon"></i>' + label);
             if(this.tooltip) {
-                patch.append('<div class="tooltip">' + this.tooltip + '</div>');
+                patch.append(`<button class="mdui-btn mdui-btn-icon"
+                    mdui-tooltip="{content: '${this.tooltip}', position: 'right', delay: 150}">
+                    <i class="mdui-icon material-icons">help</i>
+                    </button>`
+                );
             }
-            parent.append(patch);
+            var div = $("<div>", {"id": "patch"});
+            div.append(patch);
+            parent.append(div);
         }
     
         updateUI(file) {
@@ -102,260 +108,10 @@
             return patchStatus;
         }
     }
-    
-    // Each unique kind of patch should have createUI, validatePatch, applyPatch,
-    // updateUI
-    
-    // The DEFAULT state is always the 1st element in the patches array
-    class UnionPatch {
-        constructor(options) {
-            this.name = options.name;
-            this.offset = options.offset;
-            this.patches = options.patches;
-        }
-    
-        createUI(parent) {
-            this.radios = [];
-            var radio_id = createID();
-    
-            var container = $("<div>", {"class": "patch-union"});
-            container.append('<span class="patch-union-title">' + this.name + ':</span>');
-            for(var i = 0; i < this.patches.length; i++) {
-                var patch = this.patches[i];
-                var id = createID();
-                var label = patch.name;
-                var patchDiv = $('<div>', {'class' : 'patch'});
-                var radio = $('<input type="radio" id="' + id + '" name="' + radio_id + '">')[0];
-                this.radios.push(radio);
-    
-                patchDiv.append(radio);
-                patchDiv.append('<label for="' + id + '">' + label + '</label>');
-                if(patch.tooltip) {
-                    patchDiv.append('<div class="tooltip">' + patch.tooltip + '</div>');
-                }
-                container.append(patchDiv);
-            }
-            parent.append(container);
-        }
-    
-        updateUI(file) {
-            for(var i = 0; i < this.patches.length; i++) {
-                if(bytesMatch(file, this.offset, this.patches[i].patch)) {
-                    this.radios[i].checked = true;
-                    return;
-                }
-            }
-            // Default fallback
-            this.radios[0].checked = true;
-        }
-    
-        validatePatch(file) {
-            for(var i = 0; i < this.patches.length; i++) {
-                if(bytesMatch(file, this.offset, this.patches[i].patch)) {
-                    console.log(this.name, "has", this.patches[i].name, "enabled");
-                    return;
-                }
-            }
-            return '"' + this.name + '" doesn\'t have a valid patch! Have you got the right file?';
-        }
-    
-        applyPatch(file) {
-            var patch = this.getSelected();
-            replace(file, this.offset, patch.patch);
-        }
-    
-        getSelected() {
-            for(var i = 0; i < this.patches.length; i++) {
-                if(this.radios[i].checked) {
-                    return this.patches[i];
-                }
-            }
-            return null;
-        }
-    }
-    
-    var loadPatch = function(_this, self, patcher) {
-        patcher.loadPatchUI();
-        patcher.updatePatchUI();
-        patcher.container.show();
-        var successStr = patcher.filename;
-        if ($.type(_this.description) === "string") {
-            successStr += "(" + patcher.description + ")";
-        }
-        self.successDiv.html(successStr + " loaded successfully!");
-    };
-    
-    class PatchContainer {
-        constructor(patchers) {
-            this.patchers = patchers;
-            this.createUI();
-        }
-    
-        getSupportedDLLs() {
-            var dlls = [];
-            for (var i = 0; i < this.patchers.length; i++) {
-                var name = this.patchers[i].filename;
-                if (dlls.indexOf(name) === -1) {
-                    dlls.push(name);
-                }
-            }
-            return dlls;
-        }
-    
-        createUI() {
-            var self = this;
-            var container = $("<div>", {"class": "patchContainer"});
-            var header = this.getSupportedDLLs().join(", ");
-            container.html("<h3>" + header + "</h3>");
-    
-            var supportedDlls = $("<ul>");
-            this.forceLoadTexts = [];
-            this.forceLoadButtons = [];
-            this.matchSuccessText = [];
-            for (var i = 0; i < this.patchers.length; i++) {
-                var checkboxId = createID();
-    
-                var listItem = $("<li>");
-                $('<label>')
-                    .attr("for", checkboxId)
-                    .text(this.patchers[i].description)
-                    .addClass('patchPreviewLabel')
-                    .appendTo(listItem);
-                var matchPercent = $('<span>').addClass('matchPercent');
-                this.forceLoadTexts.push(matchPercent);
-                matchPercent.appendTo(listItem);
-                var matchSuccess = $('<span>').addClass('matchSuccess');
-                this.matchSuccessText.push(matchSuccess);
-                matchSuccess.appendTo(listItem);
-                var forceButton = $('<button>').text('Force load?').hide();
-                this.forceLoadButtons.push(forceButton);
-                forceButton.appendTo(listItem);
-    
-                $("<input>", {
-                    "class": "patchPreviewToggle",
-                    "id": checkboxId,
-                    "type": "checkbox",
-                }).appendTo(listItem);
-                var patchPreviews = $("<ul>").addClass('patchPreview');
-                for (var j = 0; j < this.patchers[i].mods.length; j++) {
-                    var patchName = this.patchers[i].mods[j].name;
-                    $('<li>').text(patchName).appendTo(patchPreviews);
-                }
-                patchPreviews.appendTo(listItem);
-    
-                listItem.appendTo(supportedDlls);
-            }
-    
-            $("html").on("dragover dragenter", function () {
-                container.addClass("dragover");
-                return true;
-            })
-                .on("dragleave dragend drop", function () {
-                    container.removeClass("dragover");
-                    return true;
-                })
-                .on("dragover dragenter dragleave dragend drop", function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-    
-            container.on("drop", function (e) {
-                var files = e.originalEvent.dataTransfer.files;
-                if (files && files.length > 0)
-                    self.loadFile(files[0]);
-            });
-    
-            var filepickerId = createID();
-            this.fileInput = $("<input>",
-                {
-                    "class": "fileInput",
-                    "id": filepickerId,
-                    "type": "file",
-                });
-            var label = $("<label>", {"class": "fileLabel", "for": filepickerId});
-            label.html("<strong>加载文件</strong> 或直接拖拽到窗口。");
-    
-            this.fileInput.on("change", function (e) {
-                if (this.files && this.files.length > 0)
-                    self.loadFile(this.files[0]);
-            });
-    
-            this.successDiv = $("<div>", {"class": "success"});
-            this.errorDiv = $("<div>", {"class": "error"});
-    
-            container.append(this.fileInput);
-            container.append(label);
-    
-            $("<h4>Supported Versions:</h4>").appendTo(container);
-            $("<h5>Click name to preview patches</h5>").appendTo(container);
-            container.append(supportedDlls);
-            container.append(this.successDiv);
-            container.append(this.errorDiv);
-            $("body").append(container);
-        }
-    
-        loadFile(file) {
-            var reader = new FileReader();
-            var self = this;
-    
-            reader.onload = function (e) {
-                var found = false;
-                // clear logs
-                self.errorDiv.empty();
-                self.successDiv.empty();
-                for (var i = 0; i < self.patchers.length; i++) {
-                    // reset text and buttons
-                    self.forceLoadButtons[i].hide();
-                    self.forceLoadTexts[i].text('');
-                    self.matchSuccessText[i].text('');
-                    var patcher = self.patchers[i];
-                    // remove the previous UI to clear the page
-                    patcher.destroyUI();
-                    // patcher UI elements have to exist to load the file
-                    patcher.createUI();
-                    patcher.container.hide();
-                    patcher.loadBuffer(e.target.result);
-                    if (patcher.validatePatches()) {
-                        found = true;
-                        loadPatch(this, self, patcher);
-                        // show patches matched for 100% - helps identify which version is loaded
-                        var valid = patcher.validPatches;
-                        self.matchSuccessText[i].text(' ' + valid + ' of ' + valid + ' patches matched (100%) ');
-                    }
-                }
-    
-                if (!found) {
-                    // let the user force a match
-                    for (var i = 0; i < self.patchers.length; i++) {
-                        var patcher = self.patchers[i];
-    
-                        var valid = patcher.validPatches;
-                        var percent = (valid / patcher.totalPatches * 100).toFixed(1);
-    
-                        self.forceLoadTexts[i].text(' ' + valid + ' of ' + patcher.totalPatches + ' patches matched (' + percent + '%) ');
-                        self.forceLoadButtons[i].show();
-                        self.forceLoadButtons[i].off('click');
-                        self.forceLoadButtons[i].click(function(i) {
-                            // reset old text
-                            for(var j = 0; j < self.patchers.length; j++) {
-                                self.forceLoadButtons[j].hide();
-                                self.forceLoadTexts[j].text('');
-                            }
-    
-    
-                            loadPatch(this, self, self.patchers[i]);
-                        }.bind(this, i));
-                    }
-                    self.errorDiv.html("No patch set was a 100% match.");
-                }
-            };
-    
-            reader.readAsArrayBuffer(file);
-        }
-    }
+
     
     class Patcher {
-        constructor(fname, description, args) {
+        constructor(title, fname, args) {
             this.mods = [];
             for(var i = 0; i < args.length; i++) {
                 var mod = args[i];
@@ -369,31 +125,33 @@
             }
     
             this.filename = fname;
-            this.description = description;
-            this.multiPatcher = true;
+            this.title = title;
     
-            if (!this.description) {
-                // old style patcher, use the old method to generate the UI
-                this.multiPatcher = false;
-                this.createUI();
-                this.loadPatchUI();
-            }
+            this.multiPatcher = false;
+            this.createUI();
+            this.loadPatchUI();
         }
     
         createUI() {
             var self = this;
-            this.container = $("<div>", {"class": "patchContainer"});
+            this.mainContainer = $("<div>", {"class": "mdui-container mdui-typo", "id": "mainContainer"});
+            var title = this.title;
+            this.mainContainer.html('<div class="mdui-typo-display-2 mdui-text-center">' + title + '</div>');
+            this.card = $("<div>", {"class": "mdui-card"});
+            this.container = $("<div>", {"class": "mdui-container mdui-m-y-4", "id": "patchContainer"});
             var header = this.filename;
-            if(this.description === "string") {
-                header += ' (' + this.description + ')';
-            }
-            this.container.html('<h3>' + header + '</h3>');
+            this.container.html('<h4>' + header + '</h4>');
     
-            this.successDiv = $("<div>", {"class": "success"});
-            this.errorDiv = $("<div>", {"class": "error"});
-            this.patchDiv = $("<div>", {"class": "patches"});
+            this.noticeDiv = $("<div>", {"class": "mdui-p-t-2", "id": "notice"})
+            this.successDiv = $("<div>", {"class": "mdui-text-color-green", "id": "success"});
+            this.errorDiv = $("<div>", {"class": "mdui-text-color-red", "id": "error"});
+            this.noticeDiv.append(this.successDiv);
+            this.noticeDiv.append(this.errorDiv);
+
+            this.patchDiv = $("<div>", {"class": "mdui-p-y-2", "id": "patches"});
     
-            var saveButton = $("<button disabled>");
+            var saveButton = $("<button>", {"class": "mdui-btn mdui-color-theme-accent mdui-btn-raised mdui-ripple"});
+            saveButton.prop('disabled', true)
             saveButton.text('请先加载文件');
             saveButton.on('click', this.saveDll.bind(this));
             this.saveButton = saveButton;
@@ -419,11 +177,11 @@
     
                 var filepickerId = createID();
                 this.fileInput = $("<input>",
-                    {"class": "fileInput",
+                    {"style": "display: none;",
                      "id" : filepickerId,
                      "type" : 'file'});
-                var label = $("<label>", {"class": "fileLabel", "for": filepickerId});
-                label.html('<strong>加载文件</strong> 或直接拖拽到窗口。');
+                var label = $("<label>", {"for": filepickerId});
+                label.html('<div class="mdui-btn mdui-color-theme-accent mdui-btn-raised mdui-ripple">加载文件</div> 或直接拖拽到窗口。');
     
                 this.fileInput.on('change', function(e) {
                     if(this.files && this.files.length > 0)
@@ -432,13 +190,14 @@
     
                 this.container.append(this.fileInput);
                 this.container.append(label);
+                this.card.append(this.container);
+                this.mainContainer.append(this.card);
             }
     
-            this.container.append(this.successDiv);
-            this.container.append(this.errorDiv);
+            this.container.append(this.noticeDiv);
             this.container.append(this.patchDiv);
             this.container.append(saveButton);
-            $("body").append(this.container);
+            $("body").append(this.mainContainer);
         }
     
         destroyUI() {
@@ -449,10 +208,10 @@
         loadBuffer(buffer) {
             this.dllFile = new Uint8Array(buffer);
             if(this.validatePatches()) {
-                this.successDiv.removeClass("hidden");
+                this.successDiv.css("display", "inline");
                 this.successDiv.html("文件加载成功！");
             } else {
-                this.successDiv.addClass("hidden");
+                this.successDiv.css("display", "none");
             }
             // Update save button regardless
             this.saveButton.prop('disabled', false);
@@ -515,6 +274,5 @@
     }
     
     window.Patcher = Patcher;
-    window.PatchContainer = PatchContainer;
     
     })(window, document);

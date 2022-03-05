@@ -1,14 +1,59 @@
-
 <!DOCTYPE html>
 <html lang="zh">
     <head>
         <meta charset="utf-8">
         <title>Arcaea 3.5.3c Modder</title>
-        <link rel="stylesheet" href="../style.css">
         <!-- don't hate -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <link rel="stylesheet" href="../mdui/css/mdui.min.css" />
+    
+        <style>
+            .dragover>* {
+                filter: blur(5px);
+            }
+    
+            .dragover::before {
+                content: '';
+                display: block;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                text-align: center;
+                z-index: 10;
+                outline: dashed 10px;
+            }
+    
+            .dragover::after {
+                content: "\e900";
+                font-family: 'file' !important;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+                line-height: 1;
+                /* Better Font Rendering =========== */
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+    
+                display: block;
+                height: auto;
+                position: absolute;
+                top: calc(50% - 3rem);
+                left: 0;
+                width: 100%;
+                text-align: center;
+                z-index: 11;
+                font-size: 8rem;
+            }
+        </style>
+    </head>
+    <body class="mdui-theme-primary-pink mdui-theme-accent-pink">
+        <script src="../mdui/js/mdui.min.js"></script>
         <script type="text/javascript" src="../FileSaver.min.js"></script>
         <script type="text/javascript" src="../dllpatcher.js"></script>
+
         <script type="text/javascript">
             function codeToArray(codeString) {
                 var code = codeString.replace(/\s\s+/g, ' ').trim().split(' ');
@@ -39,7 +84,7 @@
             }
 
             window.addEventListener("load", function () {
-                new Patcher("armeabi-v7a/libcocos2dcpp.so", "", [
+                new Patcher("Arcaea 3.11.2c Modder", "armeabi-v7a/libcocos2dcpp.so", [
                     {
                         name: "检查songlist, packlist, unlocks文件Hash值",
                         tooltip: "开启时将无法修改songlist, packlist, unlocks",
@@ -109,10 +154,8 @@
                 ]);
             });
             
+            mdui.mutation();
         </script>
-    </head>
-    <body>
-        <h1>Arcaea 3.11.2c Modder</h1>
     </body>
 </html>
 
