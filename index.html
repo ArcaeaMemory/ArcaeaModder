@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" />
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>Arcaea 3.5.3c Modder</title>
+    <!-- don't hate -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <link rel="stylesheet" href="./mdui/css/mdui.min.css" />
+
+    <style>
+        .dragover>* {
+            filter: blur(5px);
+        }
+
+        .dragover::before {
+            content: '';
+            display: block;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            outline: dashed 10px;
+        }
+
+        .dragover::after {
+            content: "\e900";
+            font-family: 'file' !important;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            /* Better Font Rendering =========== */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            display: block;
+            height: auto;
+            position: absolute;
+            top: calc(50% - 3rem);
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 11;
+            font-size: 8rem;
+        }
+    </style>
+</head>
+
+<body class="mdui-theme-primary-pink mdui-theme-accent-pink">
+    <div class="mdui-container mdui-typo" id="mainContainer">
+        <div class="mdui-typo-display-2 mdui-text-center">ArcaeaModder</div>
+        <div class="mdui-card">
+            <div class="mdui-container mdui-m-y-4" id="modders">
+            </div>
+        </div>
+    </div>
+
+
+    <script src="./mdui/js/mdui.min.js"></script>
+    <script type="text/javascript">
+        function loader(content) {
+            var container = $("#modders");
+            for (let i = 0; i < content.length; i++) {
+                const platform = content[i];
+                let platformDiv = $("<div>", {"id": platform.id});
+                let title = $("<h1>", {"id": platform.id});
+                title.html(platform.title);
+                platformDiv.append(title);
+                for (let j = 0; j < content[i].modders.length; j++) {
+                    const modder = content[i].modders[j];
+                    let link = $("<a>", {
+                        "class": "mdui-btn mdui-color-theme-accent mdui-btn-raised mdui-ripple mdui-m-a-1",
+                        "href": `./modder.html?platform=${platform.id}&version=${modder.id}`
+                    });
+                    link.html(modder.name);
+                    platformDiv.append(link);
+                }
+                container.append(platformDiv);
+            }
+            
+            mdui.mutation();
+        }
+    </script>
+    <script src="./location.js"></script>
+</body>
+
+</html>
