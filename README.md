@@ -1,6 +1,6 @@
 # ArcaeaModder
 
-[ArcaeaModder 页面](https://arcaeamemory.github.io/ArcaeaModder/)
+[ArcaeaModder 目录](https://arcaeamemory.github.io/ArcaeaModder/ModdersIndex.html)
 
 ---
 
