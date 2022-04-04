@@ -5,6 +5,7 @@
 ---
 
 修改自 `CHUNITHM Modder`
+如有任何私人意见或建议请直接发送邮件到 `arcaeamemory@outlook.com`
 
 ---
 
