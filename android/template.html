@@ -11,7 +11,7 @@
     <title>Arcaea 3.5.3c Modder</title>
     <!-- don't hate -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <link rel="stylesheet" href="./mdui/css/mdui.min.css" />
+    <link rel="stylesheet" href="https://arcaeamemory.github.io/ArcaeaModder/mdui/css/mdui.min.css" />
 
     <style>
         .dragover>* {
@@ -57,9 +57,9 @@
 </head>
 
 <body class="mdui-theme-primary-pink mdui-theme-accent-pink">
-    <script src="./mdui/js/mdui.min.js"></script>
-    <script type="text/javascript" src="./FileSaver.min.js"></script>
-    <script type="text/javascript" src="./dllpatcher.js"></script>
+    <script src="https://arcaeamemory.github.io/ArcaeaModder/mdui/js/mdui.min.js"></script>
+    <script type="text/javascript" src="https://arcaeamemory.github.io/ArcaeaModder/FileSaver.min.js"></script>
+    <script type="text/javascript" src="https://arcaeamemory.github.io/ArcaeaModder/dllpatcher.js"></script>
 
     <script type="text/javascript">
         // user function
@@ -82,37 +82,9 @@
             }
             return result;
         }
-
-        function asciiToArray(string) {
-            var result = [];
-            for (let i = 0; i < string.length; i++) {
-                result.push(string.charCodeAt(i));
-            }
-            result.push(0);
-            return result;
-        }
-
-        function nullList(size) {
-            var result = [];
-            for(var i = 0; i < size; i++) {
-                result.push(0);
-            }
-            return result;
-        }
-
-        function loadJS(url, callback) {
-            var script = document.createElement('script'),
-                fn = callback || function () { };
-            script.type = 'text/javascript';
-            script.onload = fn;
-            script.src = url;
-            document.getElementsByTagName('body')[0].appendChild(script);
-        }
-        const params = new URLSearchParams(window.location.search);
-        var platform = params.get('platform');
-        var version = params.get('version');
-
-        loadJS(`./${platform}/${version}.js`, mdui.mutation);
+        // JS File Start
+        
+        mdui.mutation()
     </script>
 </body>
 
